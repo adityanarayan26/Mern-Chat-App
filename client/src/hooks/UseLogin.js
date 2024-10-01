@@ -20,7 +20,7 @@ const UseLogin = () => {
         setloading(true)
         try {
 
-            const response = await axios.post('http://localhost:8000/api/auth/login', { username, password }, {
+            const response = await axios.post('https://mern-chat-app-51h0.onrender.com/api/auth/login', { username, password }, {
                 withCredentials: true // Include credentials (cookies) with the request
             })
 

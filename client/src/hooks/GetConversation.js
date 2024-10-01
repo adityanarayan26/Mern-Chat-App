@@ -10,7 +10,7 @@ const GetConversation = () => {
         const getConversation = async () => {
             setloading(true);
             try {
-                const resp = await axios.get('http://localhost:8000/api/user', {
+                const resp = await axios.get('https://mern-chat-app-51h0.onrender.com/api/user', {
                     withCredentials: true
                 });
 
