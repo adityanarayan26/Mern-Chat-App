@@ -14,7 +14,7 @@ const UseLogout = () => {
 
         setloading(true)
         try {
-            const response = await axios.post('https://mern-chat-app-51h0.onrender.com/api/auth/logout', {}, {
+            const response = await axios.post('http://localhost:8000/api/auth/logout', {}, {
                 withCredentials: true // Include credentials (cookies) with the request
             })
             if (response.error) {

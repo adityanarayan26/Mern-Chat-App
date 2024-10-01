@@ -6,7 +6,7 @@ const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
     cors: {
-        origin: 'https://mern-chat-app-51h0.onrender.com',
+        origin: 'http://localhost:3000',
         methods: ['GET', 'POST']
     }
 })
