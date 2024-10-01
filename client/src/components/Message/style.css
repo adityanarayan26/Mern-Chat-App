@@ -1,0 +1,20 @@
+:root {
+    --sb-size: 12px; /* Adjust size as needed */
+    --sb-track-color: #f1f1f1; /* Adjust track color as needed */
+    --sb-thumb-color: #888; /* Adjust thumb color as needed */
+}
+
+*::-webkit-scrollbar {
+    width: var(--sb-size);
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+    border-radius: 50px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border-radius: 50px;
+}
+
