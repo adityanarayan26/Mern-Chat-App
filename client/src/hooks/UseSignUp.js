@@ -15,7 +15,9 @@ const UseSignUp = () => {
         if (!success) return;
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:8000/api/auth/signup', { fullname, username, gender, password, confirmpassword })
+            const response = await axios.post('http://localhost:8000/api/auth/signup', { fullname, username, gender, password, confirmpassword },{
+                withCredentials: true // Include credentials (cookies) with the request
+            })
 
 
             if (response.error) {
