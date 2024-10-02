@@ -16,7 +16,7 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
-    origin: '*',
+    origin: 'https://mern-chat-app-51h0.onrender.com',
     credentials: true // Allow credentials (cookies)
 }));
 app.use('/api/auth', authRoutes)

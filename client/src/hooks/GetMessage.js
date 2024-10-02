@@ -13,7 +13,7 @@ const GetMessage = () => {
             try {
 
 
-                const resp = await axios.get(`http://localhost:8000/api/messages/${selectedConversation?._id}`, {
+                const resp = await axios.get(`https://mern-chat-app-51h0.onrender.com/api/messages/${selectedConversation?._id}`, {
                     withCredentials: true
                 })
                 if (resp.error) {
