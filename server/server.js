@@ -22,6 +22,8 @@ app.use(cors({
 app.use('/api/auth', authRoutes)
 app.use('/api/messages', messageRoutes)
 app.use('/api', userRoutes)
+
+
 app.use(express.static(path.join(__dirname, '/client/dist')));
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, 'client','dist', 'index.html'));
