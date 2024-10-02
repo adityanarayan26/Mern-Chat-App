@@ -16,7 +16,7 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
-    origin: 'https://mern-chat-app-umber-xi.vercel.app',
+    origin: 'https://chatgram.adityadev.works',
     credentials: true
 }));
 app.use('/api/auth', authRoutes)
