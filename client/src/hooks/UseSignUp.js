@@ -15,9 +15,7 @@ const UseSignUp = () => {
         if (!success) return;
         setLoading(true);
         try {
-            const response = await axios.post('https://mern-chat-app-51h0.onrender.com/api/auth/signup', { fullname, username, gender, password, confirmpassword },{
-                withCredentials: true // Include credentials (cookies) with the request
-            })
+            const response = await axios.post('https://mern-chat-app-51h0.onrender.com/api/auth/signup', { fullname, username, gender, password, confirmpassword })
 
 
             if (response.error) {
