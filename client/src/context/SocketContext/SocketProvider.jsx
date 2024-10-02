@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import AuthContext from '../Authcontext'
 import io from 'socket.io-client'
+import { url } from '../../config/constant'
 
 
 
@@ -20,7 +21,7 @@ const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         if (AuthUser) {
-            const socket = io('https://mern-chat-app-51h0.onrender.com', {
+            const socket = io(`${url}`, {
                 query: {
                     userId: AuthUser?._id
                 }

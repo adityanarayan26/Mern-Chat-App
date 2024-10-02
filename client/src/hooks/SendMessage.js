@@ -2,6 +2,7 @@ import { useState } from "react"
 import useConversation from "../zustand/useConversation"
 import axios from "axios"
 import toast from "react-hot-toast"
+import { url } from "../config/constant"
 
 
 const SendMessage = () => {
@@ -11,7 +12,7 @@ const SendMessage = () => {
     const sendMessage = async (message) => {
         setloading(true)
         try {
-            const resp = await axios.post(`https://mern-chat-app-51h0.onrender.com/api/messages/send/${selectedConversation?._id}`, { message }, {
+            const resp = await axios.post(`${url}/api/messages/send/${selectedConversation?._id}`, { message }, {
                 withCredentials: true
             })
             if (!resp.data) {

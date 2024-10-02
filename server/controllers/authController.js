@@ -30,7 +30,6 @@ export const signup = async (req, res) => {
             username,
             password: hashedPassword,
             gender,
-            verificationToken,
             profilePic: gender === 'male' ? boyProfilePic : girlProfilePic
         })
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { url } from '../config/constant';
 
 const GetConversation = () => {
     const [Loading, setloading] = useState(false);
@@ -10,7 +11,7 @@ const GetConversation = () => {
         const getConversation = async () => {
             setloading(true);
             try {
-                const resp = await axios.get('https://mern-chat-app-51h0.onrender.com/api/user', {
+                const resp = await axios.get(`${url}/api/user`, {
                     withCredentials: true
                 });
 

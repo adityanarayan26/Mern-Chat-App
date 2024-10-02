@@ -2,6 +2,7 @@ import axios from "axios"
 import { useState } from "react"
 import toast from "react-hot-toast"
 import { useNavigate } from "react-router-dom"
+import { url } from "../config/constant"
 
 
 
@@ -15,7 +16,7 @@ const UseSignUp = () => {
         if (!success) return;
         setLoading(true);
         try {
-            const response = await axios.post('https://mern-chat-app-51h0.onrender.com/api/auth/signup', { fullname, username, gender, password, confirmpassword })
+            const response = await axios.post(`${url}/api/auth/signup`, { fullname, username, gender, password, confirmpassword })
 
 
             if (response.error) {

@@ -2,9 +2,11 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import useConversation from "../zustand/useConversation"
 import toast from "react-hot-toast"
+import { url } from "../config/constant"
 
 
 const GetMessage = () => {
+
     const [loading, setloading] = useState(false)
     const { messages, setmessages, selectedConversation } = useConversation()
     useEffect(() => {
@@ -13,7 +15,7 @@ const GetMessage = () => {
             try {
 
 
-                const resp = await axios.get(`https://mern-chat-app-51h0.onrender.com/api/messages/${selectedConversation?._id}`, {
+                const resp = await axios.get(`${url}/api/messages/${selectedConversation?._id}`, {
                     withCredentials: true
                 })
                 if (resp.error) {
