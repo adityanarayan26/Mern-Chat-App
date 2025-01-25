@@ -1,35 +1,32 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import authRoutes from './routes/auth.js';
-import userRoutes from './routes/user.js';
-import messageRoutes from './routes/message.js';
-import connectDB from './db/dbconnect.js';
+import express from 'express';
+import authRoutes from './routes/auth.route.js';
+import messageRoutes from './routes/message.route.js';
+import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors'
-import { app, server } from './socket/socket.js'
-import path from 'path'
+import { ConnectDB } from './lib/db.js';
+import { app, server } from './lib/socket.js';
 
-const PORT = process.env.PORT || 8000;
 dotenv.config()
-const __dirname = path.resolve()
-app.use(cookieParser())
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+
+const PORT = process.env.PORT
+
+
 app.use(cors({
-    origin: 'https://chatgram.adityadev.works',
+    origin: process.env.FRONTEND_URL,
     credentials: true
 }));
+
+
+app.use(cookieParser());
+app.use(express.json({ limit: '50mb' })); 
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use('/api/auth', authRoutes)
-app.use('/api/messages', messageRoutes)
-app.use('/api', userRoutes)
+app.use('/messages', messageRoutes)
 
 
-// app.use(express.static(path.join(__dirname, '/client/dist')));
-// app.get("*", (req, res) => {
-//     res.sendFile(path.join(__dirname, 'client','dist', 'index.html'));
-// });
 
-server.listen(PORT, () => {
-    connectDB()
-    console.log(`server running on port ${PORT}`);
+server.listen(PORT || 4000, () => {
+    console.log(` Server is running on port ${PORT}`)
+    ConnectDB()
 })
