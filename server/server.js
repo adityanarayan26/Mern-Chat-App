@@ -13,13 +13,13 @@ const PORT = process.env.PORT
 
 
 app.use(cors({
-    origin:true,
-    credentials: true
+    origin: "https://chatgram.adityadev.works", 
+    credentials: true,
 }));
 
 
 app.use(cookieParser());
-app.use(express.json({ limit: '50mb' })); 
+app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use('/api/auth', authRoutes)
 app.use('/messages', messageRoutes)
