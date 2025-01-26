@@ -19,11 +19,11 @@ export const Zustand = create((set, get) => ({
         try {
             const response = await axiosInstance.get('api/auth/check')
             set({ authUser: response.data })
-            get().ConnectSocket()
+        get().ConnectSocket()
 
 
         } catch (error) {
-            console.log('error in checkauth', error);
+            console.log('error in checkauth', error.message);
 
             set({ authUser: null })
 
