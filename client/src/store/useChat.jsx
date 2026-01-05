@@ -7,8 +7,7 @@ export const useChat = create((set, get) => ({
     selectedUser: localStorage.getItem('selectedUser') ? JSON.parse(localStorage.getItem('selectedUser')) : null,
     messages: [],
     users: [],
-    isUsersLoading: false,
-    isMessagesLoading: false,
+    isMessagesSending: false,
 
     getUsers: async () => {
         set({ isUsersLoading: true })
@@ -38,12 +37,38 @@ export const useChat = create((set, get) => ({
     },
     sendMessages: async (messageData) => {
         const { selectedUser, messages } = get()
+        set({ isMessagesSending: true })
+
+        // Optimistic Update
+        const tempId = `temp-${Date.now()}`;
+        const authUser = Zustand.getState().authUser;
+        const optimisticMessage = {
+            _id: tempId,
+            senderId: authUser._id,
+            receiverId: selectedUser._id,
+            text: messageData.text,
+            image: messageData.image, // Use the base64 preview
+            createdAt: new Date().toISOString(),
+            status: "sending"
+        };
+
+        set({ messages: [...messages, optimisticMessage] });
+
         try {
             const res = await axiosInstance.post(`messages/send/${selectedUser._id}`, messageData)
-            set({ messages: [...messages, res.data] })
+            // Replace optimisitic message with real one
+            set((state) => ({
+                messages: state.messages.map(msg => msg._id === tempId ? res.data : msg)
+            }))
 
         } catch (error) {
+            // Remove optimistic message on error
+            set((state) => ({
+                messages: state.messages.filter(msg => msg._id !== tempId)
+            }))
             toast.error(error.response.data.message)
+        } finally {
+            set({ isMessagesSending: false })
         }
     },
     subscribeTonewMessage: () => {

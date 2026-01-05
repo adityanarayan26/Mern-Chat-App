@@ -38,11 +38,11 @@ const Main = () => {
             <Route path='/signup' element={!authUser ? <Signup /> : <Navigate to={'/'} />} />
             <Route path='/' element={authUser ? <App /> : <Navigate to='/login' />} />
             <Route path='/setting' element={<Settings />} />
-            <Route path='/profile' element={authUser ? <Profile /> : "unauthorized user"} />
+            <Route path='/profile' element={authUser ? <Profile /> : <Navigate to="/login" />} />
           </Routes>
         </div>
         <Toaster
-          position="bottom-right"
+          position="top-center"
           reverseOrder={true}
         />
       </BrowserRouter>

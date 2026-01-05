@@ -88,7 +88,7 @@ export const updateProfile = async (req, res) => {
         if (!profilePic) {
             res.status(400).json({ message: 'profile pic is required' })
         }
-        const uploadResponse = await cloudinary.uploader.upload(profilePic)
+        const uploadResponse = await cloudinary.uploader.upload(profilePic, { folder: "mernchatapp" })
         const updatedUser = await User.findByIdAndUpdate(userId, { profilePic: uploadResponse.secure_url }, { new: true })
         res.status(200).json(updatedUser)
     } catch (error) {
@@ -119,5 +119,17 @@ export const checkAuth = (req, res) => {
         console.log('error in checkauth controller', error.message);
         res.status(500).json({ message: 'internal server error' })
 
+    }
+}
+
+export const deleteAccount = async (req, res) => {
+    try {
+        const userId = req.user._id
+        await User.findByIdAndDelete(userId)
+        res.cookie('token', "", { maxAge: 0 })
+        res.status(200).json({ message: 'Account deleted successfully' })
+    } catch (error) {
+        console.log('error deleting account', error.message);
+        res.status(500).json({ message: 'internal server error' })
     }
 }

@@ -1,163 +1,182 @@
 import React, { useEffect } from 'react'
-import { Input } from "@/components/ui/input"
-import { CircleX, Cross, Image, Plus, Send, Smile, Trash } from 'lucide-react'
+import { Plus, Image, Smile, Send, Trash, X, Loader2 } from 'lucide-react'
 import { useChat } from '../store/useChat'
-import { ComboboxDropdownMenu } from './ComboBox'
 import EmojiPicker from 'emoji-picker-react';
-import { Button } from './ui/button'
 import { gsap } from 'gsap'
 import toast from 'react-hot-toast'
+
 const MessageInput = () => {
-    const [ImagePreview, setImagePreview] = React.useState(null)
+    const [imagePreview, setImagePreview] = React.useState(null)
     const imagePreviewRef = React.useRef(null)
     const inputMessageRef = React.useRef(null)
-    const [MessageInput, setMessageInput] = React.useState('')
-    const [open, setOpen] = React.useState(false)
-    const { sendMessages } = useChat()
-    const [EmojiOpen, setEmojiOpen] = React.useState(false)
-    const [SelectedEmoji, setSelectedEmoji] = React.useState(false)
-    const emojiContainer = React.useRef(null)
-    useEffect(() => {
-
-
-        open && gsap.to("#Box", { duration: 0.5, opacity: 1, y: -150, opacity: 1, ease: 'power4.out' });
-        !open && gsap.to("#Box", { duration: 0.5, opacity: 0, y: 0, ease: 'power4.out' });
-    }, [!open, open])
-
-
+    const [messageInput, setMessageInput] = React.useState('')
+    const [menuOpen, setMenuOpen] = React.useState(false)
+    const { sendMessages, isMessagesSending } = useChat()
+    const [emojiOpen, setEmojiOpen] = React.useState(false)
     const fileInputRef = React.useRef(null)
-    const handleFileChange = (e) => {
-        const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
 
+    useEffect(() => {
+        if (menuOpen) {
+            gsap.to("#actionMenu", { duration: 0.3, opacity: 1, scale: 1, ease: 'back.out(1.7)' });
+        } else {
+            gsap.to("#actionMenu", { duration: 0.2, opacity: 0, scale: 0.8, ease: 'power2.in' });
+        }
+    }, [menuOpen])
+
+    useEffect(() => {
+        if (imagePreview) {
+            gsap.to(imagePreviewRef.current, { delay: 0.2, duration: 0.4, scale: 1, opacity: 1, ease: 'back.out(1.7)' });
+        }
+    }, [imagePreview]);
+
+    const handleFileChange = (e) => {
+        const maxSize = 10 * 1024 * 1024;
         const file = e.target.files[0]
+        if (!file) return
         if (!file.type.startsWith("image/")) {
-            toast.error('Invalid file type')
+            toast.error('Please select an image file')
             return
         }
-
         if (file.size > maxSize) {
-
-            toast((t) => (
-                <span className='relative'>
-                    <h1>File size exceeds the 10 MB limit. Please upload a smaller file.</h1> <br />
-                    <p className='font-semibold'>Image Compressor is coming soon...</p>
-                    <button className='absolute -top-4 -right-6  text-red-800 ' onClick={() => toast.dismiss(t.id)}>
-                        <CircleX />
-                    </button>
-                </span>
-            ));
-            return;
+            toast.error('File size exceeds 10 MB limit')
+            return
         }
         const reader = new FileReader()
         reader.onloadend = () => {
             setImagePreview(reader.result)
-            setOpen(false)
+            setMenuOpen(false)
         }
         reader.readAsDataURL(file)
-
-
-
     }
-    useEffect(() => {
-        if (ImagePreview) {
-
-            gsap.to(imagePreviewRef.current, { delay: 0.5, duration: 0.5, scale: 1, ease: 'power4.out' });
-        }
-
-        if (open) {
-            gsap.to(imagePreviewRef.current, { duration: 0.5, x: 70, ease: 'power4.out' });
-        }
-        if (!open) {
-            gsap.to(imagePreviewRef.current, { duration: 0.5, x: 0, ease: 'power4.out' });
-        }
-
-
-    }, [ImagePreview, open]);
 
     const removeImage = () => {
-
-        setTimeout(() => {
-            setImagePreview(null)
-        }, 500);
-        if (fileInputRef.current) {
-            gsap.to(imagePreviewRef.current, { duration: 0.5, scale: 0, ease: 'power4.out' });
-            fileInputRef.current.value = ''
-
-        }
-
+        gsap.to(imagePreviewRef.current, {
+            duration: 0.3,
+            scale: 0,
+            opacity: 0,
+            ease: 'power2.in',
+            onComplete: () => {
+                setImagePreview(null)
+                if (fileInputRef.current) fileInputRef.current.value = ''
+            }
+        });
     }
 
     const handleKeyPress = async (event) => {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
-
-            if (!MessageInput.trim() && !ImagePreview) {
-                return;
-            }
-
-            try {
-                await sendMessages({ text: MessageInput.trim(), image: ImagePreview });
-                setMessageInput("");
-                setImagePreview(null);
-            } catch (error) {
-                console.error('Error sending message:', error);
-            }
+            handleSendMessage()
         }
     };
-    useEffect(() => {
-        setOpen(!open)
-    }, [EmojiOpen])
 
-    const handleSendMessage = async (e) => {
-        e.preventDefault()
-        if (!MessageInput.trim() && !ImagePreview) return;
+    const handleSendMessage = async () => {
+        if (!messageInput.trim() && !imagePreview) return;
         try {
-            await sendMessages({ text: MessageInput.trim(), image: ImagePreview });
+            await sendMessages({ text: messageInput.trim(), image: imagePreview });
             setMessageInput("")
             setImagePreview(null)
+            setEmojiOpen(false)
+            setMenuOpen(false)
             if (fileInputRef.current) fileInputRef.current.value = ''
         } catch (error) {
             console.log('Error sending message:', error);
-
         }
     }
 
     return (
-        <div className='h-full w-full text-black flex justify-center items-center gap-2 border-none outline-none  bg-base-content rounded-lg px-3 relative'>
-
-            {/* <ComboboxDropdownMenu /> */}
-            <div className='relative '>
-
-                {/* <div className='absolute -top-10'>
-                    <EmojiPicker open={EmojiOpen} ref={emojiContainer} onEmojiClick={(e) => setMessageInput(e.emoji)} emojiStyle='apple' className=' ' width={300} height={300} lazyLoadEmojis={true} previewConfig={{ showPreview: false }} />
-
-                </div> */}
-                {ImagePreview && (
-
-
-                    <div ref={imagePreviewRef} className='select-none scale-0 size-28 flex absolute  -top-32 -left-3 z-[2000]'>
-                        <img src={ImagePreview} alt="preview" className='h-full w-full rounded-md' />
-                        <Trash className='text-red-800 size-6 absolute -top-2 z-[5000] -right-2 bg-zinc-800 rounded-full p-1 cursor-pointer' onClick={removeImage} />
-                    </div>
-
-                )}
-                <input type="file" accept='image/*' className='hidden' ref={fileInputRef} onChange={handleFileChange} />
-                <Plus className={`  transition-all ease-linear duration-200 text-base-300 cursor-pointer ${open ? "rotate-90 " : ""} z-[7000]`} onClick={() => setOpen(!open)} />
-
-
-                <div id='Box' className={`h-28 w-12 absolute  -left-3 rounded-md bg-white flex flex-col justify-evenly items-center  z-[5000]`}>
-
-                    <Image className="cursor-pointer" onClick={() => fileInputRef.current?.click()} />
-                    <Smile className="cursor-pointer" onClick={() => setEmojiOpen(!EmojiOpen)} />
+        <div className='w-full text-gray-900 flex items-center gap-3 bg-white rounded-2xl px-4 py-3 relative shadow-lg border border-gray-100'>
+            {/* Image Preview */}
+            {imagePreview && (
+                <div
+                    ref={imagePreviewRef}
+                    className='absolute -top-24 left-4 scale-0 opacity-0 size-20 bg-white rounded-xl border border-gray-200 shadow-xl p-1.5 overflow-hidden'
+                >
+                    <img src={imagePreview} alt="preview" className='h-full w-full rounded-lg object-cover' />
+                    <button
+                        onClick={removeImage}
+                        className='absolute -top-1 -right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 shadow-md transition-colors'
+                    >
+                        <X size={12} />
+                    </button>
                 </div>
+            )}
+
+            <input type="file" accept='image/*' className='hidden' ref={fileInputRef} onChange={handleFileChange} />
+
+            {/* Action Toggle */}
+            <button
+                onClick={() => { setMenuOpen(!menuOpen); setEmojiOpen(false); }}
+                className={`p-2 rounded-xl transition-all duration-200 ${menuOpen ? 'bg-blue-100 text-blue-600 rotate-45' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+            >
+                <Plus size={20} />
+            </button>
+
+            {/* Action Menu */}
+            <div
+                id='actionMenu'
+                className={`absolute bottom-16 left-4 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 flex gap-1 opacity-0 scale-90 ${!menuOpen && 'pointer-events-none'}`}
+            >
+                <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="p-3 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 text-white hover:shadow-lg hover:shadow-violet-500/30 transition-all"
+                >
+                    <Image size={18} />
+                </button>
+                <button
+                    onClick={() => { setEmojiOpen(!emojiOpen); }}
+                    className="p-3 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-white hover:shadow-lg hover:shadow-orange-500/30 transition-all"
+                >
+                    <Smile size={18} />
+                </button>
             </div>
-            <input ref={inputMessageRef} name='text' type='text' className='text-lg outline-none border-none text-white w-full  h-full bg-transparent' placeholder='write a message...'
-                value={MessageInput}
+
+            {/* Emoji Picker */}
+            {emojiOpen && (
+                <div className="absolute bottom-20 left-4 z-[6000] shadow-2xl rounded-2xl overflow-hidden animate-fade-in">
+                    <div className="relative">
+                        <button
+                            onClick={() => setEmojiOpen(false)}
+                            className="absolute top-2 right-2 z-10 bg-gray-100 hover:bg-gray-200 rounded-full p-1.5 transition-colors"
+                        >
+                            <X size={16} className="text-gray-500" />
+                        </button>
+                        <EmojiPicker
+                            onEmojiClick={(e) => setMessageInput((prev) => prev + e.emoji)}
+                            theme="light"
+                            width={320}
+                            height={400}
+                        />
+                    </div>
+                </div>
+            )}
+
+            {/* Text Input */}
+            <input
+                ref={inputMessageRef}
+                type='text'
+                className='flex-1 text-sm md:text-base outline-none bg-transparent placeholder:text-gray-400 font-normal'
+                placeholder='Type a message...'
+                value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
                 onKeyDown={handleKeyPress}
             />
-            <Send className={`  text-base-300 cursor-pointer ${MessageInput === "" ? "cursor-not-allowed" : ""}`} onClick={handleSendMessage} />
-        </div >
+
+            {/* Send Button */}
+            <button
+                onClick={handleSendMessage}
+                disabled={(!messageInput.trim() && !imagePreview) || isMessagesSending}
+                className={`p-2.5 rounded-xl transition-all duration-200 ${messageInput.trim() || imagePreview
+                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40'
+                    : 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                    }`}
+            >
+                {isMessagesSending ? (
+                    <Loader2 size={18} className="animate-spin" />
+                ) : (
+                    <Send size={18} />
+                )}
+            </button>
+        </div>
     )
 }
 

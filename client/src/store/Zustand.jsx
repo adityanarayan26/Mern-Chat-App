@@ -10,7 +10,7 @@ export const Zustand = create((set, get) => ({
     isSignup: false,
     isLogginIn: false,
     isUpdatingProfile: false,
-    isUpdatingCredentials:false,
+    isUpdatingCredentials: false,
     isCheckingAuth: true,
     socket: null,
     onlineUsers: [],
@@ -19,7 +19,7 @@ export const Zustand = create((set, get) => ({
         try {
             const response = await axiosInstance.get('api/auth/check')
             set({ authUser: response.data })
-        get().ConnectSocket()
+            get().ConnectSocket()
 
 
         } catch (error) {
@@ -49,7 +49,7 @@ export const Zustand = create((set, get) => ({
             })
         } catch (error) {
 
-            toast.error(error.response.data.message, {
+            toast.error(error.response?.data?.message || 'Error signing up', {
                 style: {
                     borderRadius: '10px',
                     background: '#333',
@@ -77,7 +77,7 @@ export const Zustand = create((set, get) => ({
                 },
             })
         } catch (error) {
-            toast.error(error.response.data.message, {
+            toast.error(error.response?.data?.message || 'Error logging in', {
                 style: {
                     borderRadius: '10px',
                     background: '#333',
@@ -101,7 +101,7 @@ export const Zustand = create((set, get) => ({
                 },
             })
         } catch (error) {
-            toast.error(error.response.data.message, {
+            toast.error(error.response?.data?.message || 'Error logging out', {
                 style: {
                     borderRadius: '10px',
                     background: '#333',
@@ -123,7 +123,7 @@ export const Zustand = create((set, get) => ({
                 },
             })
         } catch (error) {
-            toast.error(error.response.data.message, {
+            toast.error(error.response?.data?.message || 'Error updating profile', {
                 style: {
                     borderRadius: '10px',
                     background: '#333',
@@ -137,8 +137,8 @@ export const Zustand = create((set, get) => ({
     UpdateFullNameandEmail: async (data) => {
         set({ isUpdatingCredentials: true })
         try {
-            const {fullName,password} = data
-            const res = await axiosInstance.put('/api/auth/update-credentials', {fullName,password})
+            const { fullName, password } = data
+            const res = await axiosInstance.put('/api/auth/update-credentials', { fullName, password })
             set({ authUser: res.data })
             toast.success('profile updated successfully', {
                 style: {
@@ -148,7 +148,7 @@ export const Zustand = create((set, get) => ({
                 },
             })
         } catch (error) {
-            toast.error(error.response.data.message, {
+            toast.error(error.response?.data?.message || 'Error updating credentials', {
                 style: {
                     borderRadius: '10px',
                     background: '#333',
@@ -156,8 +156,30 @@ export const Zustand = create((set, get) => ({
                 },
             })
         }
-        finally{
-            set({ isUpdatingCredentials: false})
+        finally {
+            set({ isUpdatingCredentials: false })
+        }
+    },
+    deleteAccount: async () => {
+        try {
+            await axiosInstance.delete('/api/auth/delete-account')
+            set({ authUser: null })
+            get().DisconnectSocket()
+            toast.success('Account deleted successfully', {
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                },
+            })
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Error deleting account', {
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                },
+            })
         }
     }
     ,

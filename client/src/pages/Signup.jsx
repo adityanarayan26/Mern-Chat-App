@@ -2,11 +2,11 @@ import { SignupForm } from "../components/signup-form"
 
 export default function Signup() {
   return (
-    (<div
-      className="flex min-h-svh flex-col items-center justify-center bg-black p-6 md:p-10">
-      <div className="w-full max-w-sm md:max-w-3xl">
+    <div
+      className="flex min-h-svh flex-col items-center justify-center bg-gray-50 p-6 md:p-10">
+      <div className="w-full max-w-md text-gray-900">
         <SignupForm />
       </div>
-    </div>)
+    </div>
   );
 }

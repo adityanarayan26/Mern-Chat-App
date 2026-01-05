@@ -13,7 +13,7 @@ const PORT = process.env.PORT
 
 
 app.use(cors({
-    origin: "https://chatgram.adityadev.works", 
+    origin: process.env.FRONTEND_URL,
     credentials: true,
 }));
 

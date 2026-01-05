@@ -68,7 +68,7 @@ export function NavUser({
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-xl bg-white border border-gray-100 shadow-xl p-2"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}>
@@ -87,20 +87,14 @@ export function NavUser({
 
             <DropdownMenuGroup>
               <Link to={'/profile'}>
-                <DropdownMenuItem className='cursor-pointer'>
-                  <UserRoundPen />
+                <DropdownMenuItem className='gap-2 cursor-pointer text-gray-700 focus:text-blue-600 focus:bg-blue-50'>
+                  <UserRoundPen size={16} />
                   Profile
                 </DropdownMenuItem></Link>
-              <Link to={'/setting'}>
-                <DropdownMenuItem>
-                  <Settings />
-                  Settings
-                </DropdownMenuItem>
-              </Link>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-500 bg-rose-500/10 flex items-center cursor-pointer" onClick={handleClick}>
-              <LogOut />
+            <DropdownMenuSeparator className="bg-gray-100" />
+            <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50" onClick={handleClick}>
+              <LogOut size={16} />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -1,1 +1,1 @@
-export const url = import.meta.env.VITE_URI
+export const url = import.meta.env.MODE === "development" ? "http://localhost:4000" : "/"
